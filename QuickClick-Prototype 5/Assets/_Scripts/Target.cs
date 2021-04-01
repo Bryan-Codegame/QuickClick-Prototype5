@@ -5,7 +5,7 @@ using UnityEngine;
 public class Target : MonoBehaviour
 {
     private Rigidbody _rigidbody;
-    public float maxForce = 20.0f, minForce = 15.0f;
+    public float maxForce = 17.0f, minForce = 15.0f;
     public float torque = 12.0f;
     public float xRange = 4;
     public float yStartSpawn = -5;
@@ -53,5 +53,18 @@ public class Target : MonoBehaviour
     private Vector3 RandomSpawnPos()
     {
         return new Vector3(Random.Range(-xRange, xRange), yStartSpawn);
+    }
+
+    private void OnMouseExit() 
+    {
+        Destroy(gameObject);    
+    }
+
+    private void OnTriggerEnter(Collider other) {
+        
+        if (other.CompareTag("KillerZone"))
+        {
+            Destroy(gameObject);
+        }
     }
 }
