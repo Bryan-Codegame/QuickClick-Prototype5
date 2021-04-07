@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 5641362521154907691}
   m_Layer: 9
   m_Name: Good5
-  m_TagString: Untagged
+  m_TagString: Good
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -130,3 +130,6 @@ MonoBehaviour:
   torque: 12
   xRange: 4
   yStartSpawn: -5
+  pointValue: 6
+  particleExplosion: {fileID: 7535607469619513247, guid: ac10190cf200c4f7e881ca8e41d3d760,
+    type: 3}

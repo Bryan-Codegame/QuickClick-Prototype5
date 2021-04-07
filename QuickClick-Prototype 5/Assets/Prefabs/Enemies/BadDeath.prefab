@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 5620174590739659970}
   m_Layer: 9
   m_Name: BadDeath
-  m_TagString: Untagged
+  m_TagString: Death
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -130,3 +130,6 @@ MonoBehaviour:
   torque: 12
   xRange: 4
   yStartSpawn: -5
+  pointValue: -15
+  particleExplosion: {fileID: 625621707174889904, guid: ef43e5aef41c142fb85a7658a397dc75,
+    type: 3}
