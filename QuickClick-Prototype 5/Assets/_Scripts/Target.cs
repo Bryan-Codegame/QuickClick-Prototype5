@@ -65,14 +65,17 @@ public class Target : MonoBehaviour
 
     private void OnMouseExit() 
     {
-        Destroy(gameObject);
-        Instantiate(particleExplosion, transform.position, particleExplosion.transform.rotation);
-        gameManager.UpdateScore(pointValue);
-
-        if (gameObject.CompareTag("Death"))
+        if (gameManager.gameState == GameManager.GameState.inGame)
         {
-            gameManager.GameOver();
-        }    
+            Destroy(gameObject);
+            Instantiate(particleExplosion, transform.position, particleExplosion.transform.rotation);
+            gameManager.UpdateScore(pointValue);
+
+            if (gameObject.CompareTag("Death"))
+            {
+                gameManager.GameOver();
+            }  
+        }   
     }
 
     private void OnTriggerEnter(Collider other) {
@@ -80,7 +83,7 @@ public class Target : MonoBehaviour
         if (other.CompareTag("KillerZone"))
         {
             Destroy(gameObject);
-            if (gameObject.CompareTag("Good"))
+            if (gameObject.CompareTag("Good") && gameManager.gameState == GameManager.GameState.inGame)
             {
                 gameManager.UpdateScore(-5);
             }

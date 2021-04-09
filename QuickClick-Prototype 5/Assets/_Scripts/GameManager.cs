@@ -2,18 +2,41 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    //Game States
+    public enum GameState
+    {
+        loading,
+        inGame,
+        gameOver
+    }
+
+    public GameState gameState;
+
+    //Buttons
+    public Button btnRestart;
+
+
     public List<GameObject> targetPrefabs;
     private float spawnTime = 1.0f; 
-    private int objectsOnScreen = 2;
+    private int objectsOnScreen;
+    private int maxObjectsOnScreen = 1;
 
+    //Text
     public TextMeshProUGUI scoreText;
     public TextMeshProUGUI gameOverText;
 
+    //Panel
+    public GameObject panelMenu;
+
+    //Score
+    private int scoreDifficulty;
     private int _score;
-    private int Score {
+    public int Score {
         
         get
         {
@@ -23,7 +46,7 @@ public class GameManager : MonoBehaviour
         //Define el valor del value pero siempre que este se menor que el mínimo, iguala a 0 el score
         set
         {
-            //value: Es lo que hace con cualquier valor que entre es un keyword 
+            //value: Es lo que hace con cualquier valor que entre, es un keyword 
             //0 es el min
             //99999 es el max 
             _score = Mathf.Clamp(value, 0, 99999);
@@ -31,11 +54,19 @@ public class GameManager : MonoBehaviour
 
     }
     // Start is called before the first frame update
-    void Start()
+    public void StartGame(int difficulty)
     {
+        gameState = GameState.inGame;
+
+        //SetActive
+        panelMenu.gameObject.SetActive(false);
+        scoreText.gameObject.SetActive(true);
+
         StartCoroutine(SpawnTarget());
         Score = 0;
         UpdateScore(0);
+        scoreDifficulty = 70;
+        maxObjectsOnScreen *= difficulty;
 
     }
 
@@ -44,10 +75,20 @@ public class GameManager : MonoBehaviour
     IEnumerator SpawnTarget()
     {
 
-        while(true)
+        while(gameState == GameState.inGame)
         {
             yield return new WaitForSeconds(spawnTime);
-            objectsOnScreen = Random.Range(1, 4);
+
+            //Increment difficulty in relation to the score 
+            if (Score >= scoreDifficulty)
+            {
+                if (maxObjectsOnScreen <= 5)
+                {
+                    maxObjectsOnScreen++;
+                    scoreDifficulty += 70;
+                }
+            }
+            objectsOnScreen = Random.Range(1, maxObjectsOnScreen);
             int index;
             for (int i = 0; i < objectsOnScreen; i++)
             {
@@ -59,6 +100,7 @@ public class GameManager : MonoBehaviour
 
     }
 
+    
 
     /// <summary>
     /// Update score and feature on the screen
@@ -73,5 +115,12 @@ public class GameManager : MonoBehaviour
     public void GameOver()
     {
         gameOverText.gameObject.SetActive(true);
+        gameState = GameState.gameOver;
+        btnRestart.gameObject.SetActive(true);
+    }
+
+    public void RestartGame()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }
