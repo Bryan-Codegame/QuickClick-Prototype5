@@ -17,6 +17,10 @@ public class GameManager : MonoBehaviour
 
     public GameState gameState;
 
+    //Lives
+    public List<GameObject> lives;
+    private int numberOfLives = 3;
+
     //Buttons
     public Button btnRestart;
 
@@ -34,6 +38,7 @@ public class GameManager : MonoBehaviour
     public GameObject panelMenu;
 
     //Score
+    private const string MAX_SCORE = "MAX SCORE";
     private int scoreDifficulty;
     private int _score;
     public int Score {
@@ -54,6 +59,10 @@ public class GameManager : MonoBehaviour
 
     }
     // Start is called before the first frame update
+    void Start() {
+        ShowMaxScore();
+    }
+
     public void StartGame(int difficulty)
     {
         gameState = GameState.inGame;
@@ -61,6 +70,12 @@ public class GameManager : MonoBehaviour
         //SetActive
         panelMenu.gameObject.SetActive(false);
         scoreText.gameObject.SetActive(true);
+
+        //Show lives on screen
+        for (int i = 0; i < lives.Count; i++)
+        {
+            lives[i].gameObject.SetActive(true);
+        }
 
         StartCoroutine(SpawnTarget());
         Score = 0;
@@ -109,14 +124,43 @@ public class GameManager : MonoBehaviour
     public void UpdateScore(int scoreToAdd)
     {
         Score += scoreToAdd;
-        scoreText.text = "Score: " + Score;
+        scoreText.text = "Score:\n" + Score;
     }
 
+    void ShowMaxScore()
+    {
+        int maxScore = PlayerPrefs.GetInt(MAX_SCORE, defaultValue: 0);
+        scoreText.text = "Max Score:\n" + maxScore;
+    }
+
+    void SetMaxScore()
+    {
+        int maxScore = PlayerPrefs.GetInt(MAX_SCORE, defaultValue: 0);
+        if (Score > maxScore)
+        {
+            //En MAX_SCORE se almacena el valor de Score en caso de que este mayor al actual.
+            PlayerPrefs.SetInt(MAX_SCORE, Score);
+        }
+    }
+
+    void decrementHealth()
+    {
+        numberOfLives--;
+        Image heardImage = lives[numberOfLives].GetComponent<Image>();
+        heardImage.color = new Color(0.4f, 0.14f, 0.14f, 0.7f);
+
+    }
     public void GameOver()
     {
-        gameOverText.gameObject.SetActive(true);
-        gameState = GameState.gameOver;
-        btnRestart.gameObject.SetActive(true);
+        decrementHealth();
+        if (numberOfLives <= 0)
+        {
+            SetMaxScore();
+            gameOverText.gameObject.SetActive(true);
+            gameState = GameState.gameOver;
+            btnRestart.gameObject.SetActive(true);
+        }
+        
     }
 
     public void RestartGame()
